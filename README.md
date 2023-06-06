@@ -1,6 +1,9 @@
 # frinder
 Website for finding friends based on your common interests
 
+## Prerequisites
+1. Node.js (v19.x or higher)
+
 # How to run
 1. Clone the repository
 2. Run `npm install` in the root directory
