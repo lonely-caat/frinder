@@ -17,18 +17,18 @@ export default class ProfileController {
           (user) => user.id === userId
         );
 
-        if (user) {
-          const response = {
-            name: user.name,
-            email: user.email,
-            hobby: user.hobby,
-          };
-          res.json(response);
-        } else {
+        if (!user) {
           res
             .status(404)
             .json({ message: `User with id = ${userId} not found :(` });
         }
+        
+        const response = {
+          name: user.name,
+          email: user.email,
+          hobby: user.hobby,
+        };
+        res.json(response);
       })
       .catch((error) => {
         res.status(400).json({ message: error.message });
