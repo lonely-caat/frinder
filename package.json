@@ -1,0 +1,27 @@
+{
+  "name": "frinder",
+  "version": "1.0.0",
+  "description": "Website for finding friends based on your common interests",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon ./backend/src/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.22",
+    "uuid": "^9.0.0",
+    "uuidv4": "^6.2.13",
+    "yup": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "8.22.0",
+    "prettier": "2.8.8"
+  },
+  "engines": {
+    "node": "19.7.0"
+  }
+}
