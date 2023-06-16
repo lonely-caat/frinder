@@ -7,12 +7,11 @@ export default class ProfileController {
     const pool = dbPool.getPool();
     try {
       const result = await pool.query("SELECT * from profile");
+      console.log(result);
       res.json(result.rows);
     } catch (err) {
       console.log(err);
-      res
-        .status(500)
-        .json({ error: "An error occurred while fetching profiles" });
+      res.status(500).json({ error: err });
     }
   }
 
