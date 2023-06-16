@@ -6,13 +6,16 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon ./backend/src/app.js"
+    "start:dev": "nodemon ./backend/src/app.js",
+    "configure:db": "sh ./bin/configuredb.sh"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.1.4",
     "express": "^4.18.2",
     "nodemon": "^2.0.22",
+    "pg": "^8.11.0",
     "uuid": "^9.0.0",
     "uuidv4": "^6.2.13",
     "yup": "^1.2.0"

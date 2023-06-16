@@ -1,11 +1,19 @@
 import { uuid } from "uuidv4";
 import { createProfileSchema, getProfileSchema } from "../helpers/schemas.js";
+import dbPool from "../db/index.js";
 
 export default class ProfileController {
-  static profiles = []; // TODO: replace with database
-
-  static getProfiles(req, res) {
-    res.json(ProfileController.profiles);
+  static async getProfiles(req, res) {
+    const pool = dbPool.getPool();
+    try {
+      const result = await pool.query("SELECT * from profile");
+      res.json(result.rows);
+    } catch (err) {
+      console.log(err);
+      res
+        .status(500)
+        .json({ error: "An error occurred while fetching profiles" });
+    }
   }
 
   static getProfile(req, res) {
@@ -22,7 +30,7 @@ export default class ProfileController {
             .status(404)
             .json({ message: `User with id = ${userId} not found :(` });
         }
-        
+
         const response = {
           name: user.name,
           email: user.email,
