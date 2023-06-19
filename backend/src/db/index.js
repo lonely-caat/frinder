@@ -27,11 +27,4 @@ class DbPool {
 const dbPoolInstance = new DbPool();
 Object.freeze(dbPoolInstance);
 
-async function test() {
-  const r = await dbPoolInstance.pool.query("SELECT * from profile");
-  console.log(r);
-}
-
-test();
-
 export default dbPoolInstance;
