@@ -1,11 +1,12 @@
-import pg from "pg";
+import { Pool } from "pg";
 import * as dotenv from "dotenv";
 
 dotenv.config({ path: "./.env" });
 
-const { Pool } = pg;
-
 class DbPool {
+  private static instance: DbPool;
+  private pool: Pool;
+
   constructor() {
     if (!DbPool.instance) {
       const user = process.env.DB_USER;
