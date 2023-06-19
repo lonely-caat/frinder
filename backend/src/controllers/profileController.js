@@ -1,60 +1,47 @@
-import { uuid } from "uuidv4";
+import { v4 } from "uuid";
 import { createProfileSchema, getProfileSchema } from "../helpers/schemas.js";
 import dbPool from "../db/index.js";
 
 export default class ProfileController {
-  static async getProfiles(req, res) {
-    const pool = dbPool.getPool();
+  static async getProfiles(req, res, next) {
     try {
-      const result = await pool.query("SELECT * from profile");
-      console.log(result);
-      res.json(result.rows);
+      const pool = dbPool.getPool();
+      const response = await pool.query("SELECT * from profile");
+      res.json(response.rows);
     } catch (err) {
-      console.log(err);
-      res.status(500).json({ error: err });
+      next(err);
     }
   }
 
-  static getProfile(req, res) {
-    getProfileSchema
-      .validate(req.params.id)
-      .then((validId) => {
-        const userId = validId;
-        const user = ProfileController.profiles.find(
-          (user) => user.id === userId
-        );
-
-        if (!user) {
-          res
-            .status(404)
-            .json({ message: `User with id = ${userId} not found :(` });
-        }
-
-        const response = {
-          name: user.name,
-          email: user.email,
-          hobby: user.hobby,
-        };
-        res.json(response);
-      })
-      .catch((error) => {
-        res.status(400).json({ message: error.message });
-      });
+  static async getProfile(req, res, next) {
+    try {
+      const userId = await getProfileSchema.validate(req.params.id);
+      const pool = dbPool.getPool();
+      const result = await pool.query("SELECT * from profile where uuid = $1", [
+        userId,
+      ]);
+      res.json(result.rows);
+    } catch (err) {
+      next(err);
+    }
   }
 
-  static createProfile(req, res) {
-    const { name, email, hobby } = req.body;
-    console.log(`${name},${email},${hobby}`);
+  static async createProfile(req, res, next) {
+    try {
+      const { name, email, hobby } = req.body;
+      console.log(`${name},${email},${hobby}`);
 
-    createProfileSchema
-      .validate({ name, email, hobby })
-      .then(() => {
-        const newUser = { id: uuid(), name, email, hobby };
-        ProfileController.profiles.push(newUser);
-        res.status(201).json(newUser);
-      })
-      .catch((error) => {
-        res.status(400).json({ message: error.message });
-      });
+      await createProfileSchema.validate({ name, email, hobby });
+
+      const newUser = { id: v4(), name, email, hobby };
+      const pool = dbPool.getPool();
+      await pool.query(
+        "INSERT INTO profile (uuid, username, email, hobby, created_on) VALUES ($1, $2, $3, $4, NOW())",
+        [newUser.id, newUser.name, newUser.email, newUser.hobby]
+      );
+      res.status(201).json(newUser);
+    } catch (error) {
+      next(error);
+    }
   }
 }
