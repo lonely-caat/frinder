@@ -3,12 +3,33 @@ import { createProfileSchema, getProfileSchema } from "../helpers/schemas";
 import dbPool from "../db/index";
 import { NextFunction, Request, Response } from "express";
 
-interface NewUser {
+interface User {
   id: string;
   name: string;
   email: string;
   hobby: string;
 }
+
+class ProfileRepository {
+  pool = dbPool.getPool();
+
+  async getAllProfiles() {
+    return this.pool.query("SELECT * from profile");
+  }
+
+  async getProfileById(userId: string) {
+    return this.pool.query("SELECT * from profile where uuid = $1", [userId]);
+  }
+
+  async createProfile(user: User) {
+    return this.pool.query(
+      "INSERT INTO profile (uuid, username, email, hobby, created_on) VALUES ($1, $2, $3, $4, NOW())",
+      [user.id, user.name, user.email, user.hobby]
+    );
+  }
+}
+
+const profileRepository = new ProfileRepository();
 
 export default class ProfileController {
   static async getProfiles(
@@ -17,9 +38,8 @@ export default class ProfileController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const pool = dbPool.getPool();
-      const response = await pool.query("SELECT * from profile");
-      res.json(response.rows);
+      const result = await profileRepository.getAllProfiles();
+      res.json(result.rows);
     } catch (err) {
       next(err);
     }
@@ -32,10 +52,7 @@ export default class ProfileController {
   ): Promise<void> {
     try {
       const userId: string = await getProfileSchema.validate(req.params.id);
-      const pool = dbPool.getPool();
-      const result = await pool.query("SELECT * from profile where uuid = $1", [
-        userId,
-      ]);
+      const result = await profileRepository.getProfileById(userId);
       res.json(result.rows);
     } catch (err) {
       next(err);
@@ -52,13 +69,9 @@ export default class ProfileController {
 
       await createProfileSchema.validate({ name, email, hobby });
 
-      const newUser: NewUser = { id: v4(), name, email, hobby };
-      const pool = dbPool.getPool();
-      await pool.query(
-        "INSERT INTO profile (uuid, username, email, hobby, created_on) VALUES ($1, $2, $3, $4, NOW())",
-        [newUser.id, newUser.name, newUser.email, newUser.hobby]
-      );
-      res.status(201).json(newUser);
+      const user: User = { id: v4(), name, email, hobby };
+      await profileRepository.createProfile(user);
+      res.status(201).json(user);
     } catch (error) {
       next(error);
     }

@@ -8,8 +8,8 @@ router.get("/:id", ProfileController.getProfile);
 router.post("/", ProfileController.createProfile);
 
 router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack); // log the error stack trace to the console
-  res.status(500).json({ message: err.message });
+  console.error(err.stack);
+  res.status(500).json({ message: 'An uncaught error occurred' });
 });
 
 export default router;

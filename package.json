@@ -6,8 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "nodemon ./backend/src/app.ts",
-    "configure:db": "sh ./bin/configuredb.sh",
-    "tsc:w": "tsc -w"
+    "configure:db": "sh ./bin/configuredb.sh"
   },
   "author": "",
   "license": "ISC",

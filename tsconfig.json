@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESNext", // to ensure latest JavaScript features are supported
-    "module": "CommonJS", // to output CommonJS that is compatible with Node.js
+    "target": "ESNext",
+    "module": "CommonJS",
     "lib": [
       "dom",
       "dom.iterable",
@@ -15,7 +15,6 @@
     "strictPropertyInitialization": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-//    "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
