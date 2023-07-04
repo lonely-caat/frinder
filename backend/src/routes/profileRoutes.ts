@@ -3,13 +3,21 @@ import ProfileController from "../controllers/profileController";
 
 const router = express.Router();
 
-router.get("/", ProfileController.getProfiles);
-router.get("/:id", ProfileController.getProfile);
-router.post("/", ProfileController.createProfile);
+const profileController = new ProfileController();
 
-router.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'An uncaught error occurred' });
+router.get("/", profileController.getProfiles);
+router.get("/:id", profileController.getProfile);
+router.post("/", profileController.createProfile);
+
+router.use(function (
+  err: any,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  console.error(err.message);
+  if (!err.statusCode) err.statusCode = 500;
+  res.status(err.statusCode).send(err.message);
 });
 
 export default router;
